@@ -7,7 +7,7 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Index">
-        <div class="form-group">
+        <div class="form-group" style="margin:10px;">
             <div style="padding:10px;">
                 <span>Enter Bearer Access Token: </span>
                 <input asp-for="AccessToken" name="accessToken" />
@@ -16,6 +16,21 @@
                 <input asp-for="File" type="file" name="file" />
                 <input type="submit" value="Upload" />
             </div>
+        </div>
+        @if (ViewBag.SuccessMessage != null)
+        {
+            <div class="alert alert-success">
+                <p>@ViewBag.SuccessMessage</p>
+            </div>
+        }
+        <div class="text-danger">
+            @foreach (var modelState in ViewData.ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    <h6 class="alert alert-danger">@error.ErrorMessage</h6>
+                }
+            }
         </div>
     </form>
 </div>
