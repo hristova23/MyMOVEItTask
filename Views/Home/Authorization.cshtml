@@ -1,26 +1,27 @@
 ﻿@using MyMOVEItTask.Models
-@model FileUploadViewModel
+@model UserViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Authorization Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Upload File</h1>
-    <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Index">
+    <h1 class="display-6">Enter Credentials:</h1>
+    <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Authorization">
         <div class="form-group" style="margin:10px;">
             <div style="padding:10px;">
-                <span>Enter Bearer Access Token: </span>
-                <input asp-for="AccessToken" name="accessToken" />
+                <input asp-for="Username" name="username" />
             </div>
             <div>
-                <input asp-for="File" type="file" name="file" />
-                <input type="submit" value="Upload" />
+                <input asp-for="Password" type="password" name="password" />
+            </div>
+            <div style="margin:10px;">
+                <input type="submit" value="Submit" />
             </div>
         </div>
-        @if (ViewBag.SuccessMessage != null)
+        @if (ViewBag.AccessToken != null)
         {
             <div class="alert alert-success">
-                <p>@ViewBag.SuccessMessage</p>
+                <p>@ViewBag.AccessToken</p>
             </div>
         }
         <div class="text-danger">

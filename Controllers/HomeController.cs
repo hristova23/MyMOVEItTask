@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyMOVEItTask.Models;
 using System.Diagnostics;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace MyMOVEItTask.Controllers
 {
@@ -20,6 +21,12 @@ namespace MyMOVEItTask.Controllers
 
         [HttpGet]
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Authorization()
         {
             return View();
         }
@@ -66,6 +73,46 @@ namespace MyMOVEItTask.Controllers
             catch (Exception)
             {
                 ModelState.AddModelError("", "Something went wrong.");
+
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Authorization(UserViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                string body = $"grant_type=password&username={model.Username}&password={model.Password}";
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress);
+                request.Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                List<KeyValuePair<string, string>> postData =
+                [
+                    new KeyValuePair<string, string>("grant_type", "password"),
+                    new KeyValuePair<string, string>("username", model.Username),
+                    new KeyValuePair<string, string>("password", model.Password),
+                ];
+
+                request.Content = new FormUrlEncodedContent(postData);
+                var response = await client.PostAsync("https://mobile-1.moveitcloud.com/api/v1/token", new FormUrlEncodedContent(postData));
+                var output = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                    ModelState.AddModelError("", output);
+                else
+                    ViewBag.AccessToken = output;
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
 
                 return View(model);
             }
