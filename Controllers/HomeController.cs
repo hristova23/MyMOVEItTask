@@ -38,9 +38,9 @@ namespace MyMOVEItTask.Controllers
                 {
                     var url = $"https://mobile-1.moveitcloud.com/api/v1/folders/{hardCodedDirId}/files";
 
-                    var filePath = Path.GetTempFileName();
+                    var filePath = Path.GetTempPath() + model.File.FileName;
 
-                    using var stream = new FileStream(filePath, FileMode.Create);
+                    using var stream = new FileStream(filePath, FileMode.CreateNew);
                     await model.File.CopyToAsync(stream);
 
                     using var fileContent = new StreamContent(stream);
